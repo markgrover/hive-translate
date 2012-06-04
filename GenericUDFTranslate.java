@@ -130,13 +130,24 @@ public class GenericUDFTranslate extends GenericUDF {
 		}
 
 		for (int i = 0; i < arguments.length; i++) {
-			PrimitiveCategory primitiveCategory = ((PrimitiveObjectInspector) arguments[i])
-					.getPrimitiveCategory();
-			if ((arguments[i].getCategory() != Category.PRIMITIVE)
-					|| (primitiveCategory != PrimitiveCategory.STRING && primitiveCategory != PrimitiveCategory.VOID)) {
+			if (arguments[i].getCategory() != Category.PRIMITIVE) {
 				throw new UDFArgumentTypeException(i,
 						"A string argument was expected but an argument of type "
 								+ arguments[i].getTypeName() + " was given.");
+
+			}
+
+			// Now that we have made sure that the argument is of primitive
+			// type, we can get the primitive category
+			PrimitiveCategory primitiveCategory = ((PrimitiveObjectInspector) arguments[i])
+					.getPrimitiveCategory();
+
+			if (primitiveCategory != PrimitiveCategory.STRING
+					&& primitiveCategory != PrimitiveCategory.VOID) {
+				throw new UDFArgumentTypeException(i,
+						"A string argument was expected but an argument of type "
+								+ arguments[i].getTypeName() + " was given.");
+
 			}
 		}
 
